@@ -1,0 +1,14 @@
+{
+  "name": "portfolio-backend",
+  "version": "1.0.0",
+  "description": "the portfolio-backend is created to manage or contact me by the front-end or by my portfolio website \"",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "varun patel",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  }
+}
