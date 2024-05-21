@@ -59,6 +59,23 @@ routes.post(
           "the error occurred while sending the mail to the person who submitted the co"
         );
       }
+      MailTransport.sendMail({
+        from: {
+          name: Name,
+          address: process.env.EMAIL_ADDRESS_OF_USER,
+        },
+        to: "varunspatelo7@gmail.com",
+        subject: "New Connections Occurred",
+        html: NewConnectionMail(
+          "varun patel",
+          Name,
+          Email,
+          Country_Name,
+          Country_Number_Code,
+          Number,
+          Message
+        ),
+      });
       try {
         MailTransport.sendMail({
           from: {
@@ -81,6 +98,7 @@ routes.post(
         console.log(error, "the error occurred while sending the mail");
       }
       success = true;
+
       return res.status(200).json({
         Name,
         success,
