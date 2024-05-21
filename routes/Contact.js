@@ -44,7 +44,7 @@ routes.post(
       });
       const Name = FirstName + LastName;
       try {
-        MailTransport.sendMail({
+        await MailTransport.sendMail({
           from: {
             name: Name,
             address: process.env.EMAIL_ADDRESS_OF_USER,
@@ -59,25 +59,9 @@ routes.post(
           "the error occurred while sending the mail to the person who submitted the co"
         );
       }
-      MailTransport.sendMail({
-        from: {
-          name: Name,
-          address: process.env.EMAIL_ADDRESS_OF_USER,
-        },
-        to: "varunspatelo7@gmail.com",
-        subject: "New Connections Occurred",
-        html: NewConnectionMail(
-          "varun patel",
-          Name,
-          Email,
-          Country_Name,
-          Country_Number_Code,
-          Number,
-          Message
-        ),
-      });
+
       try {
-        MailTransport.sendMail({
+        await MailTransport.sendMail({
           from: {
             name: Name,
             address: process.env.EMAIL_ADDRESS_OF_USER,
