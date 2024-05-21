@@ -9,6 +9,12 @@ const MailTransport = nodemailer.createTransport({
     user: process.env.SEND_MAIL_USER_NAME,
     pass: process.env.SEND_MAIL_PASSWORD,
   },
+  tls: {
+    // do not fail on invalid certs
+    rejectUnauthorized: false,
+  },
+  logger: true, // Enable logging
+  debug: true, // Enable debugging
 });
 
 module.exports = MailTransport;
