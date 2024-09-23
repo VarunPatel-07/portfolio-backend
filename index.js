@@ -11,7 +11,7 @@ const port = process.env.APP_PORT;
 const isProduction = process.env.NODE_ENV === "production";
 
 const Cors_Config = {
-  origin: ["https://varunpatel.vercel.app", "https://varunpatel-ho1znsg6h-varun-patels-projects.vercel.app"],
+  origin: "*",
   methods: ["POST"],
   credentials: true,
 };
