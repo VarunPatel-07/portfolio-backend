@@ -10,8 +10,11 @@ routes.post(
   [
     body("FirstName", "The FirstName Is Required").exists(),
     body("LastName", "The LastName Is Required").exists(),
-    body("Email", "The Email Is Required").isEmail(),
-    body("Number", "The Number Is Required").exists(),
+    body("Email", "The Email Is Invalid").isEmail(),
+    body("Number", "The Number Is Invalid")
+      .exists()
+      .matches(/^[0-9]{10}$/) // Adjust regex based on the mobile number format
+      .withMessage("The Number must be 10 digits"),
     body("Country_Name", "The Country_Name Is Required").exists(),
     body("Country_Number_Code", "The Country_Number_Code Is Required").exists(),
     body("Message", "The Message Is Required").exists(),
@@ -23,15 +26,7 @@ routes.post(
         return res.status(400).json({ errors: errors.array() });
       }
 
-      const {
-        FirstName,
-        LastName,
-        Email,
-        Number,
-        Country_Name,
-        Country_Number_Code,
-        Message,
-      } = req.body;
+      const { FirstName, LastName, Email, Number, Country_Name, Country_Number_Code, Message } = req.body;
 
       await ContactForm.create({
         FirstName,
@@ -54,10 +49,7 @@ routes.post(
           html: ThankingMail(Name),
         });
       } catch (error) {
-        console.log(
-          error,
-          "the error occurred while sending the mail to the person who submitted the co"
-        );
+        console.log(error, "the error occurred while sending the mail to the person who submitted the co");
       }
 
       try {
@@ -68,15 +60,7 @@ routes.post(
           },
           to: "varunspatelo7@gmail.com",
           subject: "New Connections Occurred",
-          html: NewConnectionMail(
-            "varun patel",
-            Name,
-            Email,
-            Country_Name,
-            Country_Number_Code,
-            Number,
-            Message
-          ),
+          html: NewConnectionMail("varun patel", Name, Email, Country_Name, Country_Number_Code, Number, Message),
         });
       } catch (error) {
         console.log(error, "the error occurred while sending the mail");
@@ -90,11 +74,7 @@ routes.post(
       });
     } catch (error) {
       success = false;
-      console.error(
-        error,
-        success,
-        "the error occurred while saving the viewer`s contact information"
-      );
+      console.error(error, success, "the error occurred while saving the viewer`s contact information");
     }
   }
 );
