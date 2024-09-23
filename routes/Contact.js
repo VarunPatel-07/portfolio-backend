@@ -74,6 +74,7 @@ routes.post(
       });
     } catch (error) {
       success = false;
+      console.log(error);
       res
         .status(200)
         .json({ error, success, message: "the error occurred while saving the viewer`s contact information" });

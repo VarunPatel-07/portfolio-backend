@@ -3,15 +3,13 @@ const express = require("express");
 const ConnectToMongoDB = require("./database");
 const cors = require("cors");
 const { rateLimit } = require("express-rate-limit");
-const cluster = require("cluster");
-const numCPUs = require("os").availableParallelism();
 
 const app = express();
 const port = process.env.APP_PORT;
 const isProduction = process.env.NODE_ENV === "production";
 
 const Cors_Config = {
-  origin: "*",
+  origin: "https://varunpatel.vercel.app",
   methods: ["POST"],
   credentials: true,
 };
@@ -31,24 +29,13 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-if (cluster.isPrimary) {
-  for (let i = 0; i < numCPUs; i++) {
-    cluster.fork();
-  }
+ConnectToMongoDB(); // Only workers should initialize the DB connection
 
-  cluster.on("exit", (worker, code, signal) => {
-    console.log(`Worker ${worker.process.pid} died`);
-    cluster.fork(); // Optional: restart a new worker
-  });
-} else {
-  ConnectToMongoDB(); // Only workers should initialize the DB connection
+app.use("/app/api/contact", require("./routes/Contact"));
 
-  app.use("/app/api/contact", require("./routes/Contact"));
-
-  app.listen(port, () => {
-    console.log(`Backend app listening on http://localhost:${port}`);
-  });
-}
+app.listen(port, () => {
+  console.log(`Backend app listening on http://localhost:${port}`);
+});
 
 // Error handler for unhandled exceptions
 app.use((err, req, res, next) => {
