@@ -11,7 +11,7 @@ const app = express();
 const port = process.env.APP_PORT;
 
 const Cors_Config = {
-  origin: "https://varunpatel.vercel.app",
+  origin: ["https://varunpatel.vercel.app", "varunpatel-ho1znsg6h-varun-patels-projects.vercel.app", "*"],
   methods: ["POST"],
   credentials: true,
 };
