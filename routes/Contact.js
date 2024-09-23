@@ -74,7 +74,9 @@ routes.post(
       });
     } catch (error) {
       success = false;
-      console.error(error, success, "the error occurred while saving the viewer`s contact information");
+      res
+        .status(200)
+        .json({ error, success, message: "the error occurred while saving the viewer`s contact information" });
     }
   }
 );
