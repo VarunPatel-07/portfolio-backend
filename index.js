@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const ConnectToMongoDB = require("./database");
-var cors = require("cors");
+const cors = require("cors");
 const { rateLimit } = require("express-rate-limit");
 const cluster = require("cluster");
 const numCPUs = require("os").availableParallelism();
@@ -9,25 +9,28 @@ const numCPUs = require("os").availableParallelism();
 ConnectToMongoDB();
 const app = express();
 const port = process.env.APP_PORT;
+
 const Cors_Config = {
-  origin: "varunpatel.vercel.app",
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  origin: "https://varunpatel.vercel.app",
+  methods: ["POST"],
   credentials: true,
 };
-app.options("", cors(Cors_Config));
+
+// Apply CORS globally
 app.use(cors(Cors_Config));
+app.options("*", cors(Cors_Config));
+
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 const limiter = rateLimit({
-  windowMs: 3 * 60 * 1000, // 15 minutes
-  limit: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
-  standardHeaders: "draft-7", // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
-  legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
-  // store: ... , // Redis, Memcached, etc. See below.
+  windowMs: 3 * 60 * 1000, // 3 minutes
+  limit: 100,
+  skip: (req) => req.method === "OPTIONS", // Skip OPTIONS requests for preflight
+  standardHeaders: "draft-7",
+  legacyHeaders: false,
 });
 
-// Apply the rate limiting middleware to all requests.
 app.use(limiter);
 
 if (cluster.isPrimary) {
@@ -41,6 +44,12 @@ if (cluster.isPrimary) {
   app.use("/app/api/contact", require("./routes/Contact"));
 
   app.listen(port, () => {
-    console.log(`backend app listing on http://localhost:${port}`);
+    console.log(`backend app listening on http://localhost:${port}`);
   });
 }
+
+// Error handler to log 500 errors
+app.use((err, req, res, next) => {
+  console.error("Error occurred:", err);
+  res.status(500).send("Internal Server Error");
+});
