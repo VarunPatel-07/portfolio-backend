@@ -21,7 +21,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 const limiter = rateLimit({
-  windowMs: 3 * 60 * 1000, // 3 minutes
+  windowMs: 10 * 60 * 1000, // 10 minutes
   limit: 20,
   skip: (req) => req.method === "OPTIONS",
   standardHeaders: "draft-7",
